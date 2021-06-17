@@ -13,7 +13,7 @@ module.exports = function(env, { mode = 'development' } = {}) {
     stats: { children: false },
     entry: './src/index.js',
     output: {
-      path: path.resolve(__dirname, 'docs'),
+      path: path.resolve(__dirname, 'build'),
       publicPath: '/',
       pathinfo: false
     },
