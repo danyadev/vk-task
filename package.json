@@ -1,0 +1,33 @@
+{
+  "name": "vk-task",
+  "version": "1.0.0",
+  "description": "Тестовое задание для стажировки ВКонтакте",
+  "scripts": {
+    "dev": "webpack serve --mode development",
+    "build": "webpack --mode production",
+    "lint": "eslint src --ext .vue,.js"
+  },
+  "repository": "https://github.com/danyadev/vk-task",
+  "author": "danyadev <danyadev@mail.ru>",
+  "devDependencies": {
+    "@vue/compiler-dom": "3.1.1",
+    "@vue/compiler-sfc": "3.1.1",
+    "copy-webpack-plugin": "9.0.0",
+    "css-loader": "5.2.6",
+    "eslint": "7.28.0",
+    "eslint-config-danyadev": "danyadev/eslint-config-danyadev",
+    "eslint-import-resolver-webpack": "0.13.1",
+    "eslint-plugin-import": "2.23.4",
+    "eslint-plugin-vue": "7.10.0",
+    "file-loader": "6.2.0",
+    "mini-css-extract-plugin": "1.6.0",
+    "vue": "3.1.1",
+    "vue-loader": "16.2.0",
+    "vue-router": "4.0.8",
+    "vue-svg-loader": "danyadev/vue-svg-loader#next",
+    "vuex": "4.0.1",
+    "webpack": "5.38.1",
+    "webpack-cli": "4.7.2",
+    "webpack-dev-server": "4.0.0-beta.3"
+  }
+}
