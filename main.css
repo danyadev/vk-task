@@ -1,0 +1,28 @@
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.messages_filler {
+  width: 100%;
+  height: 300px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: Roboto VK;
+  font-weight: 400;
+  font-display: block;
+  src: url(assets/Roboto-VK-400.woff2);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Roboto VK';
+  font-size: 15px;
+  margin: 0;
+}
+
