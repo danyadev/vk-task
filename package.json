@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "Тестовое задание для стажировки ВКонтакте",
   "scripts": {
-    "dev": "webpack serve --mode development",
+    "dev": "webpack serve --mode development --open",
     "build": "webpack --mode production",
     "lint": "eslint src --ext .vue,.js"
   },
   "repository": "https://github.com/danyadev/vk-task",
   "author": "danyadev <danyadev@mail.ru>",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@vue/compiler-dom": "3.1.1",
     "@vue/compiler-sfc": "3.1.1",

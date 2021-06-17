@@ -11,10 +11,10 @@ module.exports = function(env, { mode = 'development' } = {}) {
   return {
     mode,
     stats: { children: false },
-    entry: './src/main.js',
+    entry: './src/index.js',
     output: {
-      path: path.resolve(__dirname, 'app/dist'),
-      publicPath: 'http://localhost:9973/dist',
+      path: path.resolve(__dirname, 'docs'),
+      publicPath: '/',
       pathinfo: false
     },
     devServer: {
