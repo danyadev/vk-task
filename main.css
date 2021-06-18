@@ -83,6 +83,7 @@
 .emoji_section_item {
   width: 26px;
   height: 26px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -205,6 +206,11 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto VK';
   font-size: 15px;
   margin: 0;
+  user-select: none;
+}
+
+img {
+  -webkit-user-drag: none;
 }
 
 .emoji {
