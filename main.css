@@ -1,4 +1,47 @@
 
+.emoji_box {
+  position: absolute;
+  width: 289px;
+  bottom: calc(100% + 10px);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+.emoji_container {
+  height: 245px;
+  border: 1px solid var(--border_color);
+  border-bottom-width: 0;
+  border-radius: 4px 4px 0 0;
+}
+.emoji_bottom_nav {
+  height: 36px;
+  background-color: var(--emoji_box_bottom_background);
+  border: 1px solid var(--border_color);
+  border-top-width: 0;
+  border-radius: 0 0 4px 4px;
+}
+
+/* Стрелка */
+.emoji_box::before, .emoji_box::after {
+  right: 13px;
+  top: 100%;
+  border: solid transparent;
+
+  position: absolute;
+  content: '';
+  height: 0;
+  width: 0;
+}
+.emoji_box::before {
+  border-width: 5.4px;
+  border-top-color: var(--border_color);
+}
+.emoji_box::after {
+  margin-right: 0.4px;
+  border-width: 5px;
+  border-top-color: var(--emoji_box_bottom_background);
+  transform: translate3d(0, -1px, 0);
+}
+
+
 .chat {
   display: flex;
   flex-direction: column;
@@ -6,11 +49,58 @@
 }
 .messages_filler {
   width: 100%;
-  height: 300px;
+  height: 350px;
+}
+.input_wrap {
+  position: relative;
+  display: flex;
+  width: 290px;
+  border: 1px solid var(--border_color);
+  border-radius: 4px;
+  line-height: 18px;
+}
+.input {
+  flex-grow: 1;
+  overflow-x: hidden;
+  padding: 9px 0 9px 9px;
+  max-height: 150px;
+}
+.input:empty::before {
+  content: attr(placeholder);
+  color: var(--placeholder_color);
+  cursor: text;
+}
+.input::-webkit-scrollbar {
+  display: none;
+}
+.emoji_btn {
+  box-sizing: content-box;
+  height: 20px;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--button_background);
+  opacity: .7;
+  transition: opacity .3s;
+}
+.emoji_btn:hover, .emoji_btn.active {
+  opacity: 1;
+}
+.toggle-enter-active,
+.toggle-leave-active {
+  transition: all 0.2s ease-out;
+}
+.toggle-enter-from,
+.toggle-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
 }
 
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+:focus {
+  outline: none;
 }
 
 @font-face {
@@ -24,5 +114,15 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto VK';
   font-size: 15px;
   margin: 0;
+}
+
+:root {
+  --placeholder_color: #939393;
+
+  --button_background: #99a2ad;
+
+  --border_color: #c5d0db;
+
+  --emoji_box_bottom_background: #ebeef2;
 }
 
