@@ -1,3 +1,6 @@
+import { h } from 'vue';
+import localEmoji from './localEmoji.json';
+
 // Исправляет некоторые неправильно созданные символы
 function generateValidEmoji(emoji) {
   return emoji

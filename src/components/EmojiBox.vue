@@ -1,25 +1,18 @@
 <template>
   <div class="emoji_box">
     <Scrolly vclass="emoji_content">
-      <KeepAlive>
-        <template v-if="activeTab === 'emoji'" key="emoji">
-          <div v-for="section in sections" class="emoji_section">
-            <div class="emoji_section_name">{{ section.title }}</div>
-            <div class="emoji_section_items">
-              <div v-for="emoji of section.items" class="emoji_section_item">
-                <Emoji>{{ emoji }}</Emoji>
-              </div>
-            </div>
+      <div v-for="section in sections" class="emoji_section">
+        <div class="emoji_section_name">{{ section.title }}</div>
+        <div class="emoji_section_items">
+          <div
+            v-for="emoji of section.items"
+            class="emoji_section_item"
+            @click="addEmoji(emoji)"
+          >
+            <Emoji>{{ emoji }}</Emoji>
           </div>
-        </template>
-
-        <template v-else key="recent">
-          <div class="emoji_section">
-            <div class="emoji_section_name">Часто используемые</div>
-            <div class="emoji_section_items">...</div>
-          </div>
-        </template>
-      </KeepAlive>
+        </div>
+      </div>
     </Scrolly>
 
     <div class="emoji_tabs">
@@ -36,7 +29,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { reactive, computed, toRefs } from 'vue';
 import sections from '../js/sections.json';
 
 import Icon from './Icon.vue';
@@ -44,6 +37,8 @@ import Scrolly from './Scrolly.vue';
 import Emoji from './Emoji.vue';
 
 export default {
+  emits: ['addEmoji'],
+
   components: {
     Icon,
     Scrolly,
@@ -51,10 +46,31 @@ export default {
   },
 
   setup() {
-    return {
-      activeTab: ref('emoji'),
+    const state = reactive({
+      recentEmoji: JSON.parse(localStorage.getItem('recentEmoji') || '[]'),
+
       tabs: ['emoji', 'recent'],
-      sections
+      activeTab: 'emoji',
+
+      sections: computed(() => {
+        if (state.activeTab === 'emoji') {
+          return sections;
+        }
+
+        return [{
+          title: 'Часто используемые',
+          items: state.recentEmoji
+        }];
+      })
+    });
+
+    function addEmoji(emoji) {
+
+    }
+
+    return {
+      ...toRefs(state),
+      addEmoji
     };
   }
 };
@@ -93,6 +109,7 @@ export default {
 .emoji_section_item {
   width: 26px;
   height: 26px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
