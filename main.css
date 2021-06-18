@@ -1,34 +1,122 @@
 
+.scrolly {
+  position: relative;
+}
+.scrolly.isManualScrolling {
+  -webkit-user-drag: none;
+}
+.scrolly-viewport {
+  overflow: auto;
+  height: 100%;
+}
+.scrolly-bar-wrap {
+  /* переопределяется в JS */
+  display: none;
+  position: absolute;
+  z-index: 1;
+}
+.scrolly-bar-wrap.axis-x {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 17px;
+}
+.scrolly-bar-wrap.axis-y {
+  top: 0;
+  right: 0;
+  width: 17px;
+  height: 100%;
+}
+.scrolly-bar {
+  box-sizing: content-box;
+  border: 4px solid transparent;
+  border-width: 6px 4px;
+  cursor: pointer;
+}
+.scrolly-bar::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #dae2ea;
+  border-radius: 4px;
+  transition: background-color .3s;
+}
+.scrolly-bar:hover::before,
+.scrolly.isManualScrolling > .scrolly-bar-wrap .scrolly-bar::before {
+  background: #c5d0db;
+}
+.scrolly-bar-wrap.axis-x .scrolly-bar {
+  height: 7px;
+  min-width: 20%;
+}
+.scrolly-bar-wrap.axis-y .scrolly-bar {
+  width: 7px;
+  min-height: 20%;
+}
+
+
 .emoji_box {
   position: absolute;
   width: 289px;
   bottom: calc(100% + 10px);
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
-.emoji_container {
+.emoji_content {
   height: 245px;
+  padding: 0 10px 10px 10px;
   border: 1px solid var(--border_color);
   border-bottom-width: 0;
   border-radius: 4px 4px 0 0;
 }
-.emoji_bottom_nav {
+.emoji_content::-webkit-scrollbar {
+  display: none;
+}
+.emoji_section_name {
+  color: #939393;
+  margin: 10px 0 8px 0;
+}
+.emoji_section_items {
+  display: flex;
+  flex-wrap: wrap;
+}
+.emoji_section_item {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.emoji_tabs {
+  display: flex;
   height: 36px;
   background-color: var(--emoji_box_bottom_background);
   border: 1px solid var(--border_color);
   border-top-width: 0;
   border-radius: 0 0 4px 4px;
 }
+.emoji_tab {
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border-bottom: 1px solid var(--border_color);
+  transition: background-color .2s;
+}
+.emoji_tab:first-child {
+  border-radius: 0 0 0 4px;
+}
+.emoji_tab.active {
+  background-color: #fff;
+}
 
 /* Стрелка */
 .emoji_box::before, .emoji_box::after {
-  right: 13px;
-  top: 100%;
-  border: solid transparent;
-
   position: absolute;
   content: '';
-  height: 0;
-  width: 0;
+  top: 100%;
+  right: 13px;
+  border: solid transparent;
 }
 .emoji_box::before {
   border-width: 5.4px;
@@ -82,7 +170,10 @@
   opacity: .7;
   transition: opacity .3s;
 }
-.emoji_btn:hover, .emoji_btn.active {
+.emoji_btn:active {
+  transform: translateY(1px);
+}
+.emoji_btn:hover {
   opacity: 1;
 }
 .toggle-enter-active,
@@ -118,11 +209,8 @@ body {
 
 :root {
   --placeholder_color: #939393;
-
-  --button_background: #99a2ad;
-
   --border_color: #c5d0db;
-
+  --button_background: #99a2ad;
   --emoji_box_bottom_background: #ebeef2;
 }
 
