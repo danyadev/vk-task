@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+:focus {
+  outline: none;
+}
+
 @font-face {
   font-family: Roboto VK;
   font-weight: 400;
@@ -13,4 +17,14 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto VK';
   font-size: 15px;
   margin: 0;
+}
+
+:root {
+  --placeholder_color: #939393;
+
+  --button_background: #99a2ad;
+
+  --border_color: #c5d0db;
+
+  --emoji_box_bottom_background: #ebeef2;
 }
