@@ -10,13 +10,19 @@
   font-family: Roboto VK;
   font-weight: 400;
   font-display: block;
-  src: url('assets/Roboto-VK-400.woff2');
+  src: url('./assets/Roboto-VK-400.woff2');
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto VK';
   font-size: 15px;
   margin: 0;
+}
+
+.emoji {
+  /* margin: 0 1px -2px 1px; */
+  width: 16px;
+  height: 16px;
 }
 
 :root {

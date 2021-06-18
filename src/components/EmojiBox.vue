@@ -1,23 +1,25 @@
 <template>
   <div class="emoji_box">
     <Scrolly vclass="emoji_content">
-      <template v-if="activeTab === 'emoji'">
-        <div v-for="section in sections" class="emoji_section">
-          <div class="emoji_section_name">{{ section.title }}</div>
-          <div class="emoji_section_items">
-            <div v-for="emoji of section.items" class="emoji_section_item">
-              {{ emoji }}
+      <KeepAlive>
+        <template v-if="activeTab === 'emoji'" key="emoji">
+          <div v-for="section in sections" class="emoji_section">
+            <div class="emoji_section_name">{{ section.title }}</div>
+            <div class="emoji_section_items">
+              <div v-for="emoji of section.items" class="emoji_section_item">
+                <Emoji>{{ emoji }}</Emoji>
+              </div>
             </div>
           </div>
-        </div>
-      </template>
+        </template>
 
-      <template v-else>
-        <div class="emoji_section">
-          <div class="emoji_section_name">Часто используемые</div>
-          <div class="emoji_section_items">...</div>
-        </div>
-      </template>
+        <template v-else key="recent">
+          <div class="emoji_section">
+            <div class="emoji_section_name">Часто используемые</div>
+            <div class="emoji_section_items">...</div>
+          </div>
+        </template>
+      </KeepAlive>
     </Scrolly>
 
     <div class="emoji_tabs">
@@ -39,11 +41,13 @@ import sections from '../js/sections.json';
 
 import Icon from './Icon.vue';
 import Scrolly from './Scrolly.vue';
+import Emoji from './Emoji.vue';
 
 export default {
   components: {
     Icon,
-    Scrolly
+    Scrolly,
+    Emoji
   },
 
   setup() {

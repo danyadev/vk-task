@@ -1,4 +1,4 @@
-{
+module.exports = {
   root: true,
 
   parserOptions: {
@@ -12,4 +12,4 @@
   },
 
   extends: ['eslint-config-danyadev']
-}
+};

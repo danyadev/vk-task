@@ -10,7 +10,6 @@ module.exports = function(env, { mode = 'development' } = {}) {
 
   return {
     mode,
-    stats: { children: false },
     entry: './src/index.js',
     output: {
       path: path.resolve(__dirname, 'build'),
