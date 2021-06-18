@@ -15,11 +15,7 @@
         <EmojiBox v-if="isEmojiBoxOpened" @addEmoji="onAddEmoji" />
       </Transition>
 
-      <Icon
-        name="emoji"
-        :class="['emoji_btn', { active: isEmojiBoxOpened }]"
-        @click="isEmojiBoxOpened = !isEmojiBoxOpened"
-      />
+      <Icon name="emoji" class="emoji_btn" @click="isEmojiBoxOpened = !isEmojiBoxOpened" />
     </div>
   </div>
 </template>
@@ -101,7 +97,11 @@ export default {
   transition: opacity .3s;
 }
 
-.emoji_btn:hover, .emoji_btn.active {
+.emoji_btn:active {
+  transform: translateY(1px);
+}
+
+.emoji_btn:hover {
   opacity: 1;
 }
 

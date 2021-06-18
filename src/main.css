@@ -21,10 +21,7 @@ body {
 
 :root {
   --placeholder_color: #939393;
-
-  --button_background: #99a2ad;
-
   --border_color: #c5d0db;
-
+  --button_background: #99a2ad;
   --emoji_box_bottom_background: #ebeef2;
 }
