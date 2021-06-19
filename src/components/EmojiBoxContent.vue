@@ -27,7 +27,7 @@
 
 <script>
 import { reactive, toRefs, nextTick, onActivated } from 'vue';
-import { endScroll } from '../js/utils';
+import { timer, endScroll } from '../js/utils';
 
 import Scrolly from './Scrolly.vue';
 import Emoji from './Emoji.vue';
@@ -63,6 +63,10 @@ export default {
     const checkScroll = endScroll(async () => {
       if (!state.lockScroll && state.visibleSections !== props.sections.length) {
         state.lockScroll = true;
+
+        // Вполне комфортное время ожидания для окончания скролла,
+        // чтобы при добавлении секций эмодзи не было видно подлагивания
+        await timer(100);
 
         state.visibleSections = Math.min(state.visibleSections + 2, props.sections.length);
 

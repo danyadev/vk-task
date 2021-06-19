@@ -1,3 +1,7 @@
+export function timer(time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
 // Вызывает переданную функцию через delay мс после последнего вызова
 export function debounce(fn, delay) {
   let timerId;
