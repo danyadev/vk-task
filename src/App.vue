@@ -52,7 +52,6 @@ export default {
         const selection = document.getSelection();
 
         if (state.input.contains(selection.anchorNode)) {
-          console.log('set selection', selection);
           state.lastSelection = selection;
         }
       });
@@ -73,12 +72,9 @@ export default {
       range.collapse(true);
     }
 
-    function onAddEmoji(emoji) {
-      console.log('before focus');
-      state.input.focus();
-      console.log('after focus');
+    async function onAddEmoji(emoji) {
       addHTMLToSelection(state.lastSelection, getEmojiHTML(emoji));
-      console.log('after add emoji');
+      state.input.focus();
     }
 
     function onInput(event) {
@@ -183,14 +179,15 @@ export default {
   max-height: 150px;
 }
 
+/* emoji */
+.input img {
+  user-select: text;
+}
+
 .input:empty::before {
   content: attr(placeholder);
   color: var(--placeholder_color);
   cursor: text;
-}
-
-.input::-webkit-scrollbar {
-  display: none;
 }
 
 .emoji_btn {

@@ -94,10 +94,6 @@ export default {
   border-radius: 4px 4px 0 0;
 }
 
-.emoji_content::-webkit-scrollbar {
-  display: none;
-}
-
 .emoji_section_name {
   color: var(--placeholder_color);
   margin: 10px 0 8px 0;

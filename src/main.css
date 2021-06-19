@@ -20,8 +20,17 @@ body {
   user-select: none;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none;
+}
+
 img {
   -webkit-user-drag: none;
+  user-select: none;
 }
 
 .emoji {

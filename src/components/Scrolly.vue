@@ -285,6 +285,8 @@ export default {
     }
 
     onMounted(() => {
+      refreshScrollLayout(true);
+
       state.mutationObserver = new MutationObserver(() => {
         if (
           state.actualScrollWidth !== state.viewport.scrollWidth ||
