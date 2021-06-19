@@ -48,6 +48,8 @@ export default {
     });
 
     onMounted(() => {
+      state.input.focus();
+
       document.addEventListener('selectionchange', () => {
         const selection = document.getSelection();
 
