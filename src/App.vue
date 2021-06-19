@@ -145,6 +145,7 @@ export default {
 
       function setRange(selection) {
         const range = selection.getRangeAt(0);
+        console.log('setRange', selection, range);
 
         state.lastRange = {
           startNode: range.startContainer,
