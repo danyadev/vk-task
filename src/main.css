@@ -17,6 +17,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto VK';
   font-size: 15px;
   margin: 0;
+  user-select: none;
 }
 
 ::-webkit-scrollbar {
@@ -25,7 +26,6 @@ body {
 
 * {
   scrollbar-width: none;
-  user-select: none;
 }
 
 img {
