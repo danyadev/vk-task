@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { reactive, toRefs, onMounted } from 'vue';
+import { reactive, toRefs } from 'vue';
 import { escape, timer } from './js/utils';
 import { isEmoji, getEmojiHTML } from './js/emoji';
 
@@ -44,13 +44,12 @@ export default {
     const state = reactive({
       isEmojiBoxOpened: false,
       input: null,
-      lastRange: null,
       isWinAddEmoji: false
     });
 
     function addEmoji(emoji) {
-      insertHTML(getEmojiHTML(emoji));
       state.input.focus();
+      insertHTMLWithEmoji(emoji);
     }
 
     async function onInput(event) {
@@ -75,15 +74,12 @@ export default {
         preventInputEvent(event);
         // Ждем, пока обновится selection
         await timer(0);
-
-        const text = escape(event.data).replace(/\n/g, '<br>');
-        insertHTML(getEmojiHTML(text));
+        insertHTMLWithEmoji(event.data);
       }
     }
 
     function onPaste(event) {
-      const text = escape(event.clipboardData.getData('Text')).replace(/\n/g, '<br>');
-      document.execCommand('insertHTML', false, getEmojiHTML(text));
+      insertHTMLWithEmoji(event.clipboardData.getData('Text'));
     }
 
     function setCaretForEmoji(event) {
@@ -101,15 +97,9 @@ export default {
       sel.addRange(range);
     }
 
-    // Вставляет HTML в место, где в последний раз была каретка
-    function insertHTML(html) {
-      const range = new Range();
-      const { startNode, start, endNode, end } = state.lastRange;
-
-      range.setStart(startNode, start);
-      range.setEnd(endNode, end);
-
-      document.execCommand('insertHTML', false, html);
+    function insertHTMLWithEmoji(html) {
+      const data = escape(html).replace(/\n/g, '<br>');
+      document.execCommand('insertHTML', false, getEmojiHTML(data));
     }
 
     // Удаляем последний добавленный в инпут элемент (в нашем случае эмодзи)
@@ -139,36 +129,6 @@ export default {
       range.setEnd(node, emojiIndex + event.data.length);
       range.deleteContents();
     }
-
-    onMounted(() => {
-      state.input.focus();
-
-      function setRange(selection) {
-        const range = selection.getRangeAt(0);
-        console.log('setRange', selection, range);
-
-        state.lastRange = {
-          startNode: range.startContainer,
-          start: range.startOffset,
-          endNode: range.endContainer,
-          end: range.endOffset
-        };
-      }
-
-      // Следим за изменением позиции каретки
-      // (и заодно за собственно выделениями)
-      // ...потому что наш любимый сафари криво работает
-      document.addEventListener('selectionchange', () => {
-        const selection = document.getSelection();
-
-        if (state.input.contains(selection.anchorNode)) {
-          setRange(selection);
-        }
-      });
-
-      // Firefox не хочет при фейковом фокусе выдавать selectionchange
-      setRange(document.getSelection());
-    });
 
     return {
       ...toRefs(state),
