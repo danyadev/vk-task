@@ -102,12 +102,12 @@ export default {
 }
 
 .emoji_box::before {
-  border-width: 5.4px;
+  border-width: 6px;
   border-top-color: var(--border_color);
 }
 
 .emoji_box::after {
-  margin-right: 0.4px;
+  margin-right: 1px;
   border-width: 5px;
   border-top-color: var(--emoji_box_bottom_background);
   transform: translate3d(0, -1px, 0);

@@ -143,6 +143,17 @@ export default {
     onMounted(() => {
       state.input.focus();
 
+      function setRange(selection) {
+        const range = selection.getRangeAt(0);
+
+        state.lastRange = {
+          startNode: range.startContainer,
+          start: range.startOffset,
+          endNode: range.endContainer,
+          end: range.endOffset
+        };
+      }
+
       // Следим за изменением позиции каретки
       // (и заодно за собственно выделениями)
       // ...потому что наш любимый сафари криво работает
@@ -150,16 +161,12 @@ export default {
         const selection = document.getSelection();
 
         if (state.input.contains(selection.anchorNode)) {
-          const range = selection.getRangeAt(0);
-
-          state.lastRange = {
-            startNode: range.startContainer,
-            start: range.startOffset,
-            endNode: range.endContainer,
-            end: range.endOffset
-          };
+          setRange(selection);
         }
       });
+
+      // Firefox не хочет при фейковом фокусе выдавать selectionchange
+      setRange(document.getSelection());
     });
 
     return {
