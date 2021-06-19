@@ -4,7 +4,7 @@
       <EmojiBoxContent
         :key="activeTab"
         :sections="tabContent[activeTab]"
-        @addEmoji="$emit('addEmoji')"
+        @addEmoji="(emoji) => $emit('addEmoji', emoji)"
       />
     </KeepAlive>
 

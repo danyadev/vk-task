@@ -97,7 +97,7 @@ export default {
 }
 
 .emoji_section_name {
-  color: #939393;
+  color: var(--placeholder_color);
   margin: 10px 0 8px 0;
 }
 
@@ -113,5 +113,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color .1s;
+}
+
+.emoji_section_item:hover {
+  background-color: var(--emoji_box_item_hover);
+  border-radius: 3px;
 }
 </style>

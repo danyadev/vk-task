@@ -38,8 +38,9 @@ export default {
     const isEmojiBoxOpened = ref(false);
     const inputRef = ref();
 
-    function onAddEmoji() {
-      // TODO
+    function onAddEmoji(emoji) {
+      inputRef.value.focus();
+      document.execCommand('insertHTML', false, emoji);
     }
 
     return {
