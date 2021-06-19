@@ -1,5 +1,5 @@
 <script>
-import { h, computed } from 'vue';
+import { computed } from 'vue';
 import { generateEmojiImageVNode } from '../js/emoji';
 
 export default {

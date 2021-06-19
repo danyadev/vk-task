@@ -12,7 +12,9 @@
       ></div>
 
       <Transition name="toggle">
-        <EmojiBox v-if="isEmojiBoxOpened" @addEmoji="onAddEmoji" />
+        <KeepAlive>
+          <EmojiBox v-if="isEmojiBoxOpened" @addEmoji="onAddEmoji" />
+        </KeepAlive>
       </Transition>
 
       <Icon name="emoji" class="emoji_btn" @click="isEmojiBoxOpened = !isEmojiBoxOpened" />

@@ -6,7 +6,7 @@
   >
     <div
       ref="viewport"
-      :class="['scrolly-viewport', vclass]"
+      :class="['scrolly-viewport', vclass, lock && 'lock']"
       @scroll.passive.stop="onScroll"
     >
       <slot />
@@ -36,6 +36,7 @@
 
 <script>
 import { reactive, toRefs, onMounted, onBeforeUnmount } from 'vue';
+import { debounce } from '../js/utils';
 
 function normalize(num, max) {
   return Math.max(0, Math.min(num, max));
@@ -45,24 +46,8 @@ function toPercent(n) {
   return `${normalize(n, 1) * 100}%`;
 }
 
-// Вызывает переданную функцию через delay мс после последнего вызова
-function debounce(fn, delay) {
-  let timerId;
-
-  return function(...args) {
-    if (timerId) {
-      clearTimeout(timerId);
-    }
-
-    timerId = setTimeout(() => {
-      fn.apply(this, args);
-      timerId = null;
-    }, delay);
-  };
-}
-
 export default {
-  props: ['vclass'],
+  props: ['vclass', 'lock'],
   emits: ['scroll'],
 
   setup(props, { emit }) {
@@ -132,6 +117,10 @@ export default {
       const initialBarLeft = state.barOffsetLeft;
 
       function onMouseMove({ target, pageX, pageY, offsetX, offsetY }, isMouseUp) {
+        if (props.lock) {
+          return;
+        }
+
         const isMoveToPoint = isMouseUp && target.matches('.scrolly-bar-wrap');
         const { scrollWidth, offsetWidth, scrollHeight, offsetHeight } = viewport;
 
@@ -354,6 +343,10 @@ export default {
 .scrolly-viewport {
   overflow: auto;
   height: 100%;
+}
+
+.scrolly-viewport.lock {
+  overflow: hidden;
 }
 
 .scrolly-bar-wrap {

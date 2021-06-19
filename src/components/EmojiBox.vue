@@ -1,19 +1,12 @@
 <template>
   <div class="emoji_box">
-    <Scrolly vclass="emoji_content">
-      <div v-for="section in sections" class="emoji_section">
-        <div class="emoji_section_name">{{ section.title }}</div>
-        <div class="emoji_section_items">
-          <div
-            v-for="emoji of section.items"
-            class="emoji_section_item"
-            @click="addEmoji(emoji)"
-          >
-            <Emoji>{{ emoji }}</Emoji>
-          </div>
-        </div>
-      </div>
-    </Scrolly>
+    <KeepAlive>
+      <EmojiBoxContent
+        :key="activeTab"
+        :sections="tabContent[activeTab]"
+        @addEmoji="$emit('addEmoji')"
+      />
+    </KeepAlive>
 
     <div class="emoji_tabs">
       <div
@@ -29,20 +22,18 @@
 </template>
 
 <script>
-import { reactive, computed, toRefs } from 'vue';
+import { reactive, computed } from 'vue';
 import sections from '../js/sections.json';
 
+import EmojiBoxContent from './EmojiBoxContent.vue';
 import Icon from './Icon.vue';
-import Scrolly from './Scrolly.vue';
-import Emoji from './Emoji.vue';
 
 export default {
   emits: ['addEmoji'],
 
   components: {
-    Icon,
-    Scrolly,
-    Emoji
+    EmojiBoxContent,
+    Icon
   },
 
   setup() {
@@ -52,26 +43,16 @@ export default {
       tabs: ['emoji', 'recent'],
       activeTab: 'emoji',
 
-      sections: computed(() => {
-        if (state.activeTab === 'emoji') {
-          return sections;
-        }
-
-        return [{
+      tabContent: computed(() => ({
+        emoji: sections,
+        recent: [{
           title: 'Часто используемые',
           items: state.recentEmoji
-        }];
-      })
+        }]
+      }))
     });
 
-    function addEmoji(emoji) {
-
-    }
-
-    return {
-      ...toRefs(state),
-      addEmoji
-    };
+    return state;
   }
 };
 </script>
@@ -82,37 +63,6 @@ export default {
   width: 289px;
   bottom: calc(100% + 10px);
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.emoji_content {
-  height: 245px;
-  padding: 0 10px 10px 10px;
-  border: 1px solid var(--border_color);
-  border-bottom-width: 0;
-  border-radius: 4px 4px 0 0;
-}
-
-.emoji_content::-webkit-scrollbar {
-  display: none;
-}
-
-.emoji_section_name {
-  color: #939393;
-  margin: 10px 0 8px 0;
-}
-
-.emoji_section_items {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.emoji_section_item {
-  width: 26px;
-  height: 26px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .emoji_tabs {
