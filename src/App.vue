@@ -9,6 +9,10 @@
         role="textbox"
         contenteditable
         placeholder="Ваше сообщение"
+        @input="onInput"
+        @drop.prevent
+        @paste.prevent="paste"
+        @mousedown="setCaretForEmoji"
       ></div>
 
       <Transition name="toggle">
@@ -24,6 +28,8 @@
 
 <script>
 import { ref } from 'vue';
+import { escape } from './js/utils';
+import { isEmoji, getEmojiHTML } from './js/emoji';
 
 import EmojiBox from './components/EmojiBox.vue';
 import Icon from './components/Icon.vue';
@@ -40,13 +46,77 @@ export default {
 
     function onAddEmoji(emoji) {
       inputRef.value.focus();
-      document.execCommand('insertHTML', false, emoji);
+      document.execCommand('insertHTML', false, getEmojiHTML(emoji));
+    }
+
+    function onInput(event) {
+      if (!event.data) {
+        return;
+      }
+
+      // Если юзер вводит эмодзи через системную панель
+      if (isEmoji(event.data)) {
+        preventInputEvent(event);
+        paste(event.data);
+      }
+    }
+
+    function preventInputEvent(event) {
+      const range = new Range();
+      const sel = window.getSelection();
+
+      const node = [...inputRef.value.childNodes].find((el) => el === sel.anchorNode);
+      const emojiIndex = node.data.indexOf(event.data);
+
+      range.setStart(node, emojiIndex);
+      range.setEnd(node, emojiIndex + event.data.length);
+
+      if (!sel.isCollapsed) {
+        // Удаляем уже выделенный ранее текст
+        document.execCommand('delete');
+      }
+
+      // Создаем свое выделение
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      // Удаляем выделенный текст
+      document.execCommand('delete');
+    }
+
+    async function paste(pasteText) {
+      const text = escape(
+        typeof pasteText === 'string'
+          ? pasteText
+          : await navigator.clipboard.readText()
+      ).replace(/\n/g, '<br>');
+
+      document.execCommand('insertHTML', false, getEmojiHTML(text));
+    }
+
+    function setCaretForEmoji(event) {
+      if (event.target.tagName !== 'IMG') {
+        return;
+      }
+
+      const range = new Range();
+      const sel = window.getSelection();
+
+      range.selectNode(event.target);
+      range.collapse(event.offsetX <= event.target.clientWidth / 2);
+
+      sel.removeAllRanges();
+      sel.addRange(range);
     }
 
     return {
       isEmojiBoxOpened,
       inputRef,
-      onAddEmoji
+
+      onAddEmoji,
+      onInput,
+      paste,
+      setCaretForEmoji
     };
   }
 };

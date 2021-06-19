@@ -2,6 +2,14 @@ export function timer(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
 
+export function escape(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 // Вызывает переданную функцию через delay мс после последнего вызова
 export function debounce(fn, delay) {
   let timerId;
