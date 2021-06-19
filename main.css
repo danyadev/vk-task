@@ -70,7 +70,7 @@
   display: none;
 }
 .emoji_section_name {
-  color: #939393;
+  color: var(--placeholder_color);
   margin: 10px 0 8px 0;
 }
 .emoji_section_items {
@@ -84,6 +84,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color .1s;
+}
+.emoji_section_item:hover {
+  background-color: var(--emoji_box_item_hover);
+  border-radius: 3px;
 }
 
 
@@ -229,5 +234,6 @@ img {
   --border_color: #c5d0db;
   --button_background: #99a2ad;
   --emoji_box_bottom_background: #ebeef2;
+  --emoji_box_item_hover: #f0f2f5;
 }
 
