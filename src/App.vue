@@ -11,13 +11,13 @@
         placeholder="Ваше сообщение"
         @input="onInput"
         @drop.prevent
-        @paste.prevent="paste"
+        @paste.prevent="onPaste"
         @mousedown="setCaretForEmoji"
       ></div>
 
       <Transition name="toggle">
         <KeepAlive>
-          <EmojiBox v-if="isEmojiBoxOpened" @addEmoji="onAddEmoji" />
+          <EmojiBox v-if="isEmojiBoxOpened" @addEmoji="addEmoji" />
         </KeepAlive>
       </Transition>
 
@@ -28,7 +28,7 @@
 
 <script>
 import { reactive, toRefs, onMounted } from 'vue';
-import { escape } from './js/utils';
+import { escape, timer } from './js/utils';
 import { isEmoji, getEmojiHTML } from './js/emoji';
 
 import EmojiBox from './components/EmojiBox.vue';
@@ -44,85 +44,45 @@ export default {
     const state = reactive({
       isEmojiBoxOpened: false,
       input: null,
-      lastSelection: null
+      lastRange: null,
+      isWinAddEmoji: false
     });
 
-    onMounted(() => {
-      state.input.focus();
-
-      document.addEventListener('selectionchange', () => {
-        const selection = document.getSelection();
-
-        if (state.input.contains(selection.anchorNode)) {
-          state.lastSelection = selection;
-        }
-      });
-    });
-
-    function addHTMLToSelection(selection, html) {
-      if (selection.type === 'Range') {
-        selection.deleteFromDocument();
-        selection.collapseToEnd();
-      }
-
-      const range = selection.getRangeAt(0);
-      const fragment = range.createContextualFragment(html);
-      const lastNode = fragment.childNodes[fragment.childNodes.length - 1];
-
-      range.insertNode(fragment);
-      range.setStartAfter(lastNode);
-      range.collapse(true);
-    }
-
-    async function onAddEmoji(emoji) {
-      addHTMLToSelection(state.lastSelection, getEmojiHTML(emoji));
+    function addEmoji(emoji) {
+      insertHTML(getEmojiHTML(emoji));
       state.input.focus();
     }
 
-    function onInput(event) {
+    async function onInput(event) {
       if (!event.data) {
         return;
+      }
+
+      // На Windows при использовании системной панели эмодзи событие с добавлением
+      // эмодзи приходит аж два раза подряд, поэтому здесь нужна такая проверка
+      if (state.isWinAddEmoji && event.inputType === 'insertText') {
+        state.isWinAddEmoji = false;
+        preventInputEvent(event);
+        return;
+      }
+
+      if (event.inputType === 'insertCompositionText') {
+        state.isWinAddEmoji = true;
       }
 
       // Если юзер вводит эмодзи через системную панель
       if (isEmoji(event.data)) {
         preventInputEvent(event);
+        // Ждем, пока обновится selection
+        await timer(0);
 
         const text = escape(event.data).replace(/\n/g, '<br>');
-        document.execCommand('insertHTML', false, getEmojiHTML(text));
+        insertHTML(getEmojiHTML(text));
       }
     }
 
-    function preventInputEvent(event) {
-      const range = new Range();
-      const sel = window.getSelection();
-
-      const node = [...state.input.childNodes].find((el) => el === sel.anchorNode);
-      const emojiIndex = node.data.indexOf(event.data);
-
-      range.setStart(node, emojiIndex);
-      range.setEnd(node, emojiIndex + event.data.length);
-
-      if (!sel.isCollapsed) {
-        // Удаляем уже выделенный ранее текст
-        document.execCommand('delete');
-      }
-
-      // Создаем свое выделение
-      sel.removeAllRanges();
-      sel.addRange(range);
-
-      // Удаляем выделенный текст
-      document.execCommand('delete');
-    }
-
-    async function paste(pasteText) {
-      const text = escape(
-        typeof pasteText === 'string'
-          ? pasteText
-          : await navigator.clipboard.readText()
-      ).replace(/\n/g, '<br>');
-
+    function onPaste(event) {
+      const text = escape(event.clipboardData.getData('Text')).replace(/\n/g, '<br>');
       document.execCommand('insertHTML', false, getEmojiHTML(text));
     }
 
@@ -141,12 +101,73 @@ export default {
       sel.addRange(range);
     }
 
+    // Вставляет HTML в место, где в последний раз была каретка
+    function insertHTML(html) {
+      const range = new Range();
+      const { startNode, start, endNode, end } = state.lastRange;
+
+      range.setStart(startNode, start);
+      range.setEnd(endNode, end);
+
+      document.execCommand('insertHTML', false, html);
+    }
+
+    // Удаляем последний добавленный в инпут элемент (в нашем случае эмодзи)
+    function preventInputEvent(event) {
+      function getNodes(childNodes) {
+        const nodes = [];
+
+        for (const node of childNodes) {
+          if (node.nodeName === 'DIV') {
+            nodes.push(...node.childNodes);
+          } else {
+            nodes.push(node);
+          }
+        }
+
+        return nodes;
+      }
+
+      const selection = window.getSelection();
+      const nodes = getNodes(state.input.childNodes);
+      const node = nodes.find((el) => el === selection.anchorNode);
+
+      const range = new Range();
+      const emojiIndex = node.data.indexOf(event.data);
+
+      range.setStart(node, emojiIndex);
+      range.setEnd(node, emojiIndex + event.data.length);
+      range.deleteContents();
+    }
+
+    onMounted(() => {
+      state.input.focus();
+
+      // Следим за изменением позиции каретки
+      // (и заодно за собственно выделениями)
+      // ...потому что наш любимый сафари криво работает
+      document.addEventListener('selectionchange', () => {
+        const selection = document.getSelection();
+
+        if (state.input.contains(selection.anchorNode)) {
+          const range = selection.getRangeAt(0);
+
+          state.lastRange = {
+            startNode: range.startContainer,
+            start: range.startOffset,
+            endNode: range.endContainer,
+            end: range.endOffset
+          };
+        }
+      });
+    });
+
     return {
       ...toRefs(state),
 
-      onAddEmoji,
+      addEmoji,
       onInput,
-      paste,
+      onPaste,
       setCaretForEmoji
     };
   }
