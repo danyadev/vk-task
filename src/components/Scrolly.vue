@@ -36,7 +36,6 @@
 
 <script>
 import { reactive, toRefs, onMounted, onBeforeUnmount } from 'vue';
-import { debounce } from '../js/utils';
 
 function normalize(num, max) {
   return Math.max(0, Math.min(num, max));
@@ -75,7 +74,6 @@ export default {
       isManualScrolling: false,
 
       mutationObserver: null,
-      resizeObserver: null,
 
       timerId: null
     });
@@ -303,19 +301,10 @@ export default {
         characterData: true,
         subtree: true
       });
-
-      state.resizeObserver = new ResizeObserver(
-        debounce(refreshScrollLayout, 250)
-      );
-
-      state.resizeObserver.observe(state.viewport, {
-        box: 'border-box'
-      });
     });
 
     onBeforeUnmount(() => {
       state.mutationObserver.disconnect();
-      state.resizeObserver.disconnect();
     });
 
     return {

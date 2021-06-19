@@ -4,7 +4,7 @@
 
     <div class="input_wrap">
       <div
-        ref="inputRef"
+        ref="input"
         class="input"
         role="textbox"
         contenteditable
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { reactive, toRefs, onMounted } from 'vue';
 import { escape } from './js/utils';
 import { isEmoji, getEmojiHTML } from './js/emoji';
 
@@ -41,12 +41,44 @@ export default {
   },
 
   setup() {
-    const isEmojiBoxOpened = ref(false);
-    const inputRef = ref();
+    const state = reactive({
+      isEmojiBoxOpened: false,
+      input: null,
+      lastSelection: null
+    });
+
+    onMounted(() => {
+      document.addEventListener('selectionchange', () => {
+        const selection = document.getSelection();
+
+        if (state.input.contains(selection.anchorNode)) {
+          console.log('set selection', selection);
+          state.lastSelection = selection;
+        }
+      });
+    });
+
+    function addHTMLToSelection(selection, html) {
+      if (selection.type === 'Range') {
+        selection.deleteFromDocument();
+        selection.collapseToEnd();
+      }
+
+      const range = selection.getRangeAt(0);
+      const fragment = range.createContextualFragment(html);
+      const lastNode = fragment.childNodes[fragment.childNodes.length - 1];
+
+      range.insertNode(fragment);
+      range.setStartAfter(lastNode);
+      range.collapse(true);
+    }
 
     function onAddEmoji(emoji) {
-      inputRef.value.focus();
-      document.execCommand('insertHTML', false, getEmojiHTML(emoji));
+      console.log('before add emoji');
+      addHTMLToSelection(state.lastSelection, getEmojiHTML(emoji));
+      console.log('before focus (after add emoji)');
+      state.input.focus();
+      console.log('after focus');
     }
 
     function onInput(event) {
@@ -57,7 +89,9 @@ export default {
       // Если юзер вводит эмодзи через системную панель
       if (isEmoji(event.data)) {
         preventInputEvent(event);
-        paste(event.data);
+
+        const text = escape(event.data).replace(/\n/g, '<br>');
+        document.execCommand('insertHTML', false, getEmojiHTML(text));
       }
     }
 
@@ -65,7 +99,7 @@ export default {
       const range = new Range();
       const sel = window.getSelection();
 
-      const node = [...inputRef.value.childNodes].find((el) => el === sel.anchorNode);
+      const node = [...state.input.childNodes].find((el) => el === sel.anchorNode);
       const emojiIndex = node.data.indexOf(event.data);
 
       range.setStart(node, emojiIndex);
@@ -110,8 +144,7 @@ export default {
     }
 
     return {
-      isEmojiBoxOpened,
-      inputRef,
+      ...toRefs(state),
 
       onAddEmoji,
       onInput,
@@ -162,6 +195,7 @@ export default {
 
 .emoji_btn {
   box-sizing: content-box;
+  flex: none;
   height: 20px;
   padding: 8px;
   cursor: pointer;

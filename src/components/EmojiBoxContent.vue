@@ -71,7 +71,9 @@ export default {
         state.visibleSections = Math.min(state.visibleSections + 2, props.sections.length);
 
         await nextTick();
-        requestIdleCallback(() => (state.lockScroll = false));
+        await timer(0);
+
+        state.lockScroll = false;
       }
     });
 

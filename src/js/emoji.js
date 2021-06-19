@@ -45,7 +45,7 @@ export function generateEmojiImageVNode(emoji) {
   return validEmoji;
 }
 
-function generateEmojiImageText(emoji) {
+function generateEmojiImageHTML(emoji) {
   const [validEmoji, style] = getEmojiAndStyle(emoji);
 
   if (style) {
@@ -60,5 +60,5 @@ export function isEmoji(emoji) {
 }
 
 export function getEmojiHTML(text) {
-  return text.replace(emojiRegex, generateEmojiImageText);
+  return text.replace(emojiRegex, generateEmojiImageHTML);
 }
