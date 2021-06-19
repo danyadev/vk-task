@@ -9,6 +9,9 @@
   overflow: auto;
   height: 100%;
 }
+.scrolly-viewport.lock {
+  overflow: hidden;
+}
 .scrolly-bar-wrap {
   /* переопределяется в JS */
   display: none;
@@ -56,12 +59,6 @@
 }
 
 
-.emoji_box {
-  position: absolute;
-  width: 289px;
-  bottom: calc(100% + 10px);
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-}
 .emoji_content {
   height: 245px;
   padding: 0 10px 10px 10px;
@@ -87,6 +84,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+
+.emoji_box {
+  position: absolute;
+  width: 289px;
+  bottom: calc(100% + 10px);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
 .emoji_tabs {
   display: flex;
