@@ -66,9 +66,6 @@
   border-bottom-width: 0;
   border-radius: 4px 4px 0 0;
 }
-.emoji_content::-webkit-scrollbar {
-  display: none;
-}
 .emoji_section_name {
   color: var(--placeholder_color);
   margin: 10px 0 8px 0;
@@ -164,13 +161,15 @@
   padding: 9px 0 9px 9px;
   max-height: 150px;
 }
+
+/* emoji */
+.input img {
+  user-select: text;
+}
 .input:empty::before {
   content: attr(placeholder);
   color: var(--placeholder_color);
   cursor: text;
-}
-.input::-webkit-scrollbar {
-  display: none;
 }
 .emoji_btn {
   box-sizing: content-box;
@@ -220,8 +219,17 @@ body {
   user-select: none;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none;
+}
+
 img {
   -webkit-user-drag: none;
+  user-select: none;
 }
 
 .emoji {
