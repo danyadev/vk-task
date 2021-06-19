@@ -74,11 +74,11 @@ export default {
     }
 
     function onAddEmoji(emoji) {
-      console.log('before add emoji');
-      addHTMLToSelection(state.lastSelection, getEmojiHTML(emoji));
-      console.log('before focus (after add emoji)');
+      console.log('before focus');
       state.input.focus();
       console.log('after focus');
+      addHTMLToSelection(state.lastSelection, getEmojiHTML(emoji));
+      console.log('after add emoji');
     }
 
     function onInput(event) {
