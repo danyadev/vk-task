@@ -129,6 +129,7 @@
 .emoji_box::before {
   border-width: 6px;
   border-top-color: var(--border_color);
+  transform: translate3d(0, -0.5px, 0);
 }
 .emoji_box::after {
   margin-right: 1px;
@@ -159,7 +160,7 @@
   flex-grow: 1;
   overflow-x: hidden;
   padding: 9px 0 9px 9px;
-  max-height: 150px;
+  max-height: 180px;
 }
 
 /* emoji */
@@ -235,6 +236,10 @@ img {
   margin: 0 1px -2px 1px;
   width: 16px;
   height: 16px;
+}
+
+.link {
+  color: #2a5885;
 }
 
 :root {
