@@ -46,7 +46,7 @@ export default {
       scrolly: null,
       scrollTop: null,
       lockScroll: false,
-      visibleSections: 1
+      visibleSections: 2
     });
 
     onActivated(() => {
@@ -60,20 +60,9 @@ export default {
       checkScroll(scrollyEvent);
     }
 
-    const checkScroll = endScroll(async () => {
-      if (!state.lockScroll && state.visibleSections !== props.sections.length) {
-        state.lockScroll = true;
-
-        // Вполне комфортное время ожидания для окончания скролла,
-        // чтобы при добавлении секций эмодзи не было видно подлагивания
-        await timer(100);
-
+    const checkScroll = endScroll(() => {
+      if (state.visibleSections !== props.sections.length) {
         state.visibleSections = Math.min(state.visibleSections + 2, props.sections.length);
-
-        await nextTick();
-        await timer(0);
-
-        state.lockScroll = false;
       }
     });
 
