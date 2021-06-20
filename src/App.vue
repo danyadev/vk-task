@@ -28,8 +28,9 @@
 
 <script>
 import { reactive, toRefs } from 'vue';
-import { escape, timer } from './js/utils';
-import { isEmoji, getEmojiHTML } from './js/emoji';
+import { escape } from './js/utils';
+import { isEmoji, getEmojiAndBackground } from './js/emoji';
+import highlightInputContent from './js/highlightInputContent';
 
 import EmojiBox from './components/EmojiBox.vue';
 import Icon from './components/Icon.vue';
@@ -49,37 +50,35 @@ export default {
 
     function addEmoji(emoji) {
       state.input.focus();
-      insertHTMLWithEmoji(emoji);
+      insertText(emoji);
     }
 
-    async function onInput(event) {
-      if (!event.data) {
-        return;
+    function onInput(event) {
+      if (event.data) {
+        // На Windows при использовании системной панели эмодзи событие с добавлением
+        // эмодзи приходит аж два раза подряд, поэтому здесь нужна такая проверка
+        if (state.isWinAddEmoji) {
+          state.isWinAddEmoji = false;
+          preventInputEvent(event);
+          return;
+        }
+
+        if (event.inputType === 'insertCompositionText') {
+          state.isWinAddEmoji = true;
+        }
+
+        // Если юзер вводит эмодзи через системную панель
+        if (isEmoji(event.data)) {
+          preventInputEvent(event);
+          insertText(event.data);
+        }
       }
 
-      // На Windows при использовании системной панели эмодзи событие с добавлением
-      // эмодзи приходит аж два раза подряд, поэтому здесь нужна такая проверка
-      if (state.isWinAddEmoji && event.inputType === 'insertText') {
-        state.isWinAddEmoji = false;
-        preventInputEvent(event);
-        return;
-      }
-
-      if (event.inputType === 'insertCompositionText') {
-        state.isWinAddEmoji = true;
-      }
-
-      // Если юзер вводит эмодзи через системную панель
-      if (isEmoji(event.data)) {
-        preventInputEvent(event);
-        // Ждем, пока обновится selection
-        await timer(0);
-        insertHTMLWithEmoji(event.data);
-      }
+      highlightInputContent(state.input, event);
     }
 
     function onPaste(event) {
-      insertHTMLWithEmoji(event.clipboardData.getData('Text'));
+      insertText(event.clipboardData.getData('Text'));
     }
 
     function setCaretForEmoji(event) {
@@ -95,11 +94,6 @@ export default {
 
       sel.removeAllRanges();
       sel.addRange(range);
-    }
-
-    function insertHTMLWithEmoji(html) {
-      const data = escape(html).replace(/\n/g, '<br>');
-      document.execCommand('insertHTML', false, getEmojiHTML(data));
     }
 
     // Удаляем последний добавленный в инпут элемент (в нашем случае эмодзи)
@@ -128,6 +122,22 @@ export default {
       range.setStart(node, emojiIndex);
       range.setEnd(node, emojiIndex + event.data.length);
       range.deleteContents();
+    }
+
+    function getEmojiHTML(emoji) {
+      const [validEmoji, background] = getEmojiAndBackground(emoji);
+
+      if (background) {
+        const style = `background: ${background}`;
+        return `<img class="emoji" src="assets/blank.gif" style="${style}" alt="${validEmoji}">`;
+      }
+
+      return validEmoji;
+    }
+
+    function insertText(text) {
+      const data = escape(text).replace(/\n/g, '<br>');
+      document.execCommand('insertHTML', false, getEmojiHTML(data));
     }
 
     return {
@@ -167,7 +177,7 @@ export default {
   flex-grow: 1;
   overflow-x: hidden;
   padding: 9px 0 9px 9px;
-  max-height: 150px;
+  max-height: 180px;
 }
 
 /* emoji */

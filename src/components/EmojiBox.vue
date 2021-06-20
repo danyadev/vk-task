@@ -23,7 +23,7 @@
 
 <script>
 import { reactive, computed } from 'vue';
-import sections from '../js/sections.json';
+import sections from '../json/sections.json';
 
 import EmojiBoxContent from './EmojiBoxContent.vue';
 import Icon from './Icon.vue';
@@ -104,6 +104,7 @@ export default {
 .emoji_box::before {
   border-width: 6px;
   border-top-color: var(--border_color);
+  transform: translate3d(0, -0.5px, 0);
 }
 
 .emoji_box::after {
