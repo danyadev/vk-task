@@ -151,7 +151,10 @@ export default function(input, event) {
   prevNodes = childNodes;
 
   // Перенос строки (не меняет численную позицию каретки)
-  if (['insertParagraph', 'insertText'].includes(event.inputType) && event.data === null) {
+  if (
+    ['insertParagraph', 'insertLineBreak', 'insertText'].includes(event.inputType) &&
+    event.data === null
+  ) {
     return;
   }
 
