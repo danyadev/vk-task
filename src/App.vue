@@ -54,6 +54,8 @@ export default {
     }
 
     function onInput(event) {
+      console.log(event);
+
       if (event.data) {
         // На Windows при использовании системной панели эмодзи событие с добавлением
         // эмодзи приходит аж два раза подряд, поэтому здесь нужна такая проверка
@@ -65,12 +67,6 @@ export default {
 
         if (event.inputType === 'insertCompositionText') {
           state.isWinAddEmoji = true;
-        }
-
-        // Если юзер вводит эмодзи через системную панель
-        if (isEmoji(event.data)) {
-          preventInputEvent(event);
-          insertText(event.data);
         }
       }
 
