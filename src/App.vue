@@ -1,5 +1,5 @@
 <template>
-  <div class="chat">
+  <div class="chat" @keydown.tab.stop.prevent="isEmojiBoxOpened = !isEmojiBoxOpened">
     <div class="messages_filler"></div>
 
     <div class="input_wrap">
