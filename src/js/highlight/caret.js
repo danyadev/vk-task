@@ -7,8 +7,7 @@ export function saveCaretPosition(input) {
   preCaretRange.selectNodeContents(input);
   preCaretRange.setEnd(range.endContainer, range.endOffset);
 
-  const nodes = [...preCaretRange.cloneContents().childNodes]
-    .filter((node) => node.nodeName !== 'BR');
+  const nodes = [...preCaretRange.cloneContents().childNodes];
 
   return nodes.map((node) => getTextContent(node, true)).join('').length;
 }

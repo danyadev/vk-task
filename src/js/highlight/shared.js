@@ -17,7 +17,7 @@ export function getTextContent(node, ignoreBRs) {
   if (node.nodeName === 'BR' && ignoreBRs !== true) return '\n';
   if (node.nodeName === 'IMG') return node.alt;
 
-  return [...node.childNodes].map(getTextContent).join('');
+  return [...node.childNodes].map((node) => getTextContent(node, ignoreBRs)).join('');
 }
 
 export function isNodeEqualFragment(node, fragment) {
