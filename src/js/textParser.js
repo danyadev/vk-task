@@ -116,26 +116,10 @@ const emailParser = createParser({
   parseElement: (value) => [{ type: 'email', value }]
 });
 
-const brParser = createParser({
-  regexp: /\n/g,
-  parseText: emailParser,
-  parseElement: () => [{ type: 'br' }]
-});
-
 const emojiParser = createParser({
   regexp: emojiRegex,
-  parseText: brParser,
+  parseText: emailParser,
   parseElement: (value) => [{ type: 'emoji', value }]
 });
 
-export default function(text) {
-  const blocks = emojiParser(text);
-  const reversed = blocks.slice().reverse();
-
-  for (const block of reversed) {
-    if (block.type !== 'br') break;
-    block.type = 'brDiv';
-  }
-
-  return blocks;
-}
+export default (text) => emojiParser(text);

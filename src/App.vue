@@ -29,8 +29,8 @@
 <script>
 import { reactive, toRefs } from 'vue';
 import { escape } from './js/utils';
-import { isEmoji, getEmojiAndBackground } from './js/emoji';
-import highlightInputContent from './js/highlightInputContent';
+import { getEmojiAndBackground } from './js/emoji';
+import highlightInputContent from './js/highlight';
 
 import EmojiBox from './components/EmojiBox.vue';
 import Icon from './components/Icon.vue';

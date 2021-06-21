@@ -28,7 +28,3 @@ export function getEmojiAndBackground(emoji) {
 
   return [validEmoji, background];
 }
-
-export function isEmoji(emoji) {
-  return emojiRegex.test(emoji);
-}
