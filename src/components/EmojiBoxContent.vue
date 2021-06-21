@@ -31,9 +31,8 @@
 </template>
 
 <script>
-import { reactive, toRefs, onActivated, onDeactivated } from 'vue';
+import { reactive, computed, toRefs, onActivated, onDeactivated } from 'vue';
 import { endScroll } from '../js/utils';
-import emojiSections from '../json/sections.json';
 
 import Scrolly from './Scrolly.vue';
 import Emoji from './Emoji.vue';
@@ -52,11 +51,11 @@ export default {
       scrolly: null,
       scrollTop: null,
       lockScroll: false,
-      visibleSections: 1
+      visibleSections: 1,
+      sections: computed(() => props.sections.map((section) => section.items))
     });
 
     const arrowKeys = ['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown'];
-    const sections = emojiSections.map((section) => section.items);
 
     function addEmoji(event, emoji) {
       emit('addEmoji', emoji);
@@ -144,7 +143,7 @@ export default {
       );
 
       const getLines = (section) => {
-        const linesCount = Math.ceil((section.length - 1) / EMOJI_ON_LINE);
+        const linesCount = Math.ceil(section.length / EMOJI_ON_LINE);
         const lines = [];
 
         for (let i = 0; i < linesCount; i++) {
@@ -159,10 +158,10 @@ export default {
         el.focus();
       };
 
-      const sectionIndex = sections.findIndex((section) => section.includes(emoji));
-      const prevSection = sections[sectionIndex - 1];
-      const section = sections[sectionIndex];
-      const nextSection = sections[sectionIndex + 1];
+      const sectionIndex = state.sections.findIndex((section) => section.includes(emoji));
+      const prevSection = state.sections[sectionIndex - 1];
+      const section = state.sections[sectionIndex];
+      const nextSection = state.sections[sectionIndex + 1];
 
       if (event.code === 'ArrowLeft') {
         const emojiIndex = section.indexOf(emoji);

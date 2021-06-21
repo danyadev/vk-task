@@ -12,7 +12,7 @@ function processCopy(value) {
   return value;
 }
 
-function copyArray(arr) {
+export function copyArray(arr) {
   const newArr = [];
 
   for (let i = 0; i < arr.length; i++) {
@@ -22,7 +22,7 @@ function copyArray(arr) {
   return newArr;
 }
 
-export default function copyObject(obj) {
+function copyObject(obj) {
   const newObj = {};
 
   for (const key in obj) {
