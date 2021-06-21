@@ -16,7 +16,7 @@
         <div
           v-for="emoji of section.items"
           :key="emoji"
-          tabindex="0"
+          tabindex="-1"
           class="emoji_section_item"
           :data-emoji="emoji"
           @focus="addFocus"

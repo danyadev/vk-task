@@ -1,5 +1,5 @@
 <template>
-  <div class="chat" @keydown.tab.stop.prevent="isEmojiBoxOpened = !isEmojiBoxOpened">
+  <div class="chat" @keydown.tab.stop.prevent="toggleBox(!isEmojiBoxOpened)">
     <div class="messages_filler"></div>
 
     <div class="input_wrap">
@@ -17,18 +17,23 @@
 
       <Transition name="toggle">
         <KeepAlive>
-          <EmojiBox v-if="isEmojiBoxOpened" @addEmoji="addEmoji" />
+          <EmojiBox
+            v-if="isEmojiBoxOpened"
+            @addEmoji="addEmoji"
+            @mouseover="onMouseOver"
+            @mouseout="onMouseOut"
+          />
         </KeepAlive>
       </Transition>
 
-      <Icon name="emoji" class="emoji_btn" @click="isEmojiBoxOpened = !isEmojiBoxOpened" />
+      <Icon name="emoji" class="emoji_btn" @click="toggleBox(!isEmojiBoxOpened)" />
     </div>
   </div>
 </template>
 
 <script>
 import { reactive, toRefs } from 'vue';
-import { escape } from './js/utils';
+import { escape, mouseOverWrapper, mouseOutWrapper } from './js/utils';
 import { getEmojiAndBackground } from './js/emoji';
 import highlightInputContent from './js/highlight';
 
@@ -45,7 +50,25 @@ export default {
     const state = reactive({
       isEmojiBoxOpened: false,
       input: null,
-      isWinAddEmoji: false
+      isWinAddEmoji: false,
+      hideTimeout: null
+    });
+
+    function toggleBox(value) {
+      state.isEmojiBoxOpened = value;
+
+      clearTimeout(state.hideTimeout);
+      state.hideTimeout = null;
+    }
+
+    const onMouseOver = mouseOverWrapper(() => {
+      toggleBox(true);
+    });
+
+    const onMouseOut = mouseOutWrapper(() => {
+      state.hideTimeout = setTimeout(() => {
+        toggleBox(false);
+      }, 250);
     });
 
     function addEmoji(emoji) {
@@ -137,10 +160,15 @@ export default {
     return {
       ...toRefs(state),
 
-      addEmoji,
+      toggleBox,
+
       onInput,
       onPaste,
-      setCaretForEmoji
+      setCaretForEmoji,
+
+      addEmoji,
+      onMouseOver,
+      onMouseOut
     };
   }
 };
