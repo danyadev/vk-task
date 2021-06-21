@@ -12,12 +12,12 @@ export function flatNodes(childNodes) {
   return nodes;
 }
 
-export function getTextContent(node, ignoreBRs) {
+export function getTextContent(node) {
   if (node.nodeName === '#text') return node.data.replace(/\n/g, '');
-  if (node.nodeName === 'BR' && ignoreBRs !== true) return '\n';
+  if (node.nodeName === 'BR') return '\n';
   if (node.nodeName === 'IMG') return node.alt;
 
-  return [...node.childNodes].map((node) => getTextContent(node, ignoreBRs)).join('');
+  return [...node.childNodes].map(getTextContent).join('');
 }
 
 export function isNodeEqualFragment(node, fragment) {

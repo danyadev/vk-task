@@ -9,7 +9,7 @@ export function saveCaretPosition(input) {
 
   const nodes = [...preCaretRange.cloneContents().childNodes];
 
-  return nodes.map((node) => getTextContent(node, true)).join('').length;
+  return nodes.map(getTextContent).join('').length;
 }
 
 function getCaretNodeAndOffset(input, caretPosition) {
@@ -17,10 +17,6 @@ function getCaretNodeAndOffset(input, caretPosition) {
   let readed = 0;
 
   for (const node of nodes) {
-    if (node.nodeName === 'BR') {
-      continue;
-    }
-
     const len = getTextContent(node).length;
 
     if (readed + len >= caretPosition) {
@@ -41,12 +37,10 @@ export function restoreCaretPosition(input, caretPosition) {
 
     if (node.nodeName === 'IMG') {
       range.setStartAfter(node, offset);
+    } else if (node.nodeType === Node.TEXT_NODE) {
+      range.setStart(node, offset);
     } else {
-      try {
-        range.setStart(node, offset);
-      } catch {
-        range.setStart(node.childNodes[0], offset);
-      }
+      range.setStart(node.childNodes[0], offset);
     }
 
     range.collapse(true);

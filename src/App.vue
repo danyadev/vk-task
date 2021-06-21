@@ -68,7 +68,7 @@ export default {
         }
       }
 
-      highlightInputContent(state.input, event);
+      highlightInputContent(state.input);
     }
 
     function onPaste(event) {
