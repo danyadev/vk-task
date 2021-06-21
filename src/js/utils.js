@@ -1,7 +1,3 @@
-export function timer(time) {
-  return new Promise((resolve) => setTimeout(resolve, time));
-}
-
 export function escape(text) {
   return text
     .replace(/&/g, '&amp;')

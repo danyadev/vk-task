@@ -1,4 +1,3 @@
-import { h } from 'vue';
 import localEmoji from '../json/localEmoji.json';
 
 // Взято из Emoji.emojiRegex в vk.com

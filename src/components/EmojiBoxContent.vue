@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import { reactive, toRefs, nextTick, onActivated } from 'vue';
-import { timer, endScroll } from '../js/utils';
+import { reactive, toRefs, onActivated } from 'vue';
+import { endScroll } from '../js/utils';
 
 import Scrolly from './Scrolly.vue';
 import Emoji from './Emoji.vue';
@@ -46,7 +46,7 @@ export default {
       scrolly: null,
       scrollTop: null,
       lockScroll: false,
-      visibleSections: 2
+      visibleSections: 1
     });
 
     onActivated(() => {

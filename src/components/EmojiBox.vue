@@ -4,7 +4,7 @@
       <EmojiBoxContent
         :key="activeTab"
         :sections="tabContent[activeTab]"
-        @addEmoji="(emoji) => $emit('addEmoji', emoji)"
+        @addEmoji="addEmoji"
       />
     </KeepAlive>
 
@@ -13,7 +13,7 @@
         v-for="tab of tabs"
         :key="tab"
         :class="['emoji_tab', { active: activeTab === tab }]"
-        @click="activeTab = tab"
+        @click="setActiveTab(tab)"
       >
         <Icon :name="tab" color="var(--button_background)" />
       </div>
@@ -22,7 +22,8 @@
 </template>
 
 <script>
-import { reactive, computed } from 'vue';
+import { reactive, computed, toRefs } from 'vue';
+import copyObject from '../js/copyObject';
 import sections from '../json/sections.json';
 
 import EmojiBoxContent from './EmojiBoxContent.vue';
@@ -36,9 +37,18 @@ export default {
     Icon
   },
 
-  setup() {
+  setup(props, { emit }) {
     const state = reactive({
-      recentEmoji: JSON.parse(localStorage.getItem('recentEmoji') || '[]'),
+      recentEmojiMap: JSON.parse(localStorage.getItem('recentEmoji') || '{}'),
+      recentEmoji: computed(() => (
+        Object
+          .entries(state.recentEmojiMap)
+          .sort((a, b) => b[1] - a[1])
+          .map((entry) => entry[0])
+      )),
+
+      // Обновляется при переходе в раздел недавних
+      currentRecentEmoji: null,
 
       tabs: ['emoji', 'recent'],
       activeTab: 'emoji',
@@ -47,12 +57,43 @@ export default {
         emoji: sections,
         recent: [{
           title: 'Часто используемые',
-          items: state.recentEmoji
+          items: state.currentRecentEmoji
         }]
       }))
     });
 
-    return state;
+    function addEmoji(emoji) {
+      if (state.recentEmojiMap[emoji]) {
+        state.recentEmojiMap[emoji]++;
+      } else {
+        const recent = state.recentEmoji;
+
+        if (recent.length > 25) {
+          delete state.recentEmojiMap[recent[recent.length - 1]];
+        }
+
+        state.recentEmojiMap[emoji] = 1;
+      }
+
+      localStorage.setItem('recentEmoji', JSON.stringify(state.recentEmojiMap));
+
+      emit('addEmoji', emoji);
+    }
+
+    function setActiveTab(tab) {
+      if (tab === 'recent') {
+        state.currentRecentEmoji = copyObject(state.recentEmoji);
+      }
+
+      state.activeTab = tab;
+    }
+
+    return {
+      ...toRefs(state),
+
+      addEmoji,
+      setActiveTab
+    };
   }
 };
 </script>
