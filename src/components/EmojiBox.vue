@@ -23,7 +23,6 @@
 
 <script>
 import { reactive, computed, toRefs } from 'vue';
-import { copyArray } from '../js/copyObject';
 import sections from '../json/sections.json';
 
 import EmojiBoxContent from './EmojiBoxContent.vue';
@@ -82,7 +81,7 @@ export default {
 
     function setActiveTab(tab) {
       if (tab === 'recent') {
-        state.currentRecentEmoji = copyArray(state.recentEmoji);
+        state.currentRecentEmoji = [...state.recentEmoji];
       }
 
       state.activeTab = tab;
