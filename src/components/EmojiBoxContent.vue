@@ -49,6 +49,7 @@ export default {
   setup(props, { emit }) {
     const state = reactive({
       scrolly: null,
+      viewport: computed(() => state.scrolly && state.scrolly.viewport),
       scrollTop: null,
       lockScroll: false,
       visibleSections: 1,
@@ -84,11 +85,11 @@ export default {
     /* Focus */
 
     function getFocusedEmoji() {
-      return state.scrolly.viewport.querySelector('.emoji_section_item.focused');
+      return state.viewport.querySelector('.emoji_section_item.focused');
     }
 
     function addFocus(event) {
-      [...state.scrolly.viewport.querySelectorAll('.emoji_section_item.focused')].map((el) => {
+      [...state.viewport.querySelectorAll('.emoji_section_item.focused')].map((el) => {
         el.classList.remove('focused');
       });
 
@@ -96,7 +97,7 @@ export default {
     }
 
     function removeFocus(event) {
-      const emojis = state.scrolly.viewport.querySelectorAll('.emoji_section_item.focused');
+      const emojis = state.viewport.querySelectorAll('.emoji_section_item.focused');
 
       if (emojis.length > 1) {
         event.currentTarget.classList.remove('focused');
@@ -117,10 +118,16 @@ export default {
 
       event.preventDefault();
 
-      const emojiEl = getFocusedEmoji();
+      let emojiEl = getFocusedEmoji();
 
       if (!emojiEl) {
-        return;
+        emojiEl = state.viewport.querySelector('.emoji_section_item');
+
+        if (emojiEl) {
+          emojiEl.classList.add('focused');
+        } else {
+          return;
+        }
       }
 
       if (event.code === 'Enter') {
@@ -154,7 +161,7 @@ export default {
       };
 
       const setEmoji = (emoji) => {
-        const el = state.scrolly.viewport.querySelector(`[data-emoji="${emoji}"]`);
+        const el = state.viewport.querySelector(`[data-emoji="${emoji}"]`);
         el.focus();
       };
 
@@ -213,15 +220,7 @@ export default {
 
     onActivated(() => {
       if (state.scrollTop !== null) {
-        state.scrolly.viewport.scrollTop = state.scrollTop;
-      }
-
-      if (!getFocusedEmoji()) {
-        const emojiEl = state.scrolly.viewport.querySelector('.emoji_section_item');
-
-        if (emojiEl) {
-          emojiEl.classList.add('focused');
-        }
+        state.viewport.scrollTop = state.scrollTop;
       }
 
       window.addEventListener('keydown', onKeyDown);
