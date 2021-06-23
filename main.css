@@ -191,7 +191,7 @@
 }
 .toggle-enter-active,
 .toggle-leave-active {
-  transition: all 0.2s ease-out;
+  transition: transform .2s ease-out, opacity .2s ease-out;
 }
 .toggle-enter-from,
 .toggle-leave-to {
