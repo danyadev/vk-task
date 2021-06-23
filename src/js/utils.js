@@ -34,11 +34,15 @@ export function mouseOverWrapper(fn) {
   };
 }
 
-export function mouseOutWrapper(fn) {
+export function mouseOutWrapper(fn, getIgnore) {
   return (event) => {
     const root = event.currentTarget;
 
-    if (!event.toElement || !root.contains(event.toElement)) {
+    if (
+      !event.toElement ||
+      !root.contains(event.toElement) &&
+        !getIgnore().some((el) => el.contains(event.toElement))
+    ) {
       fn(event);
     }
   };

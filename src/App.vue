@@ -26,7 +26,12 @@
         </KeepAlive>
       </Transition>
 
-      <Icon name="emoji" class="emoji_btn" @click="toggleBox(!isEmojiBoxOpened)" />
+      <Icon
+        ref="emojiBtn"
+        name="emoji"
+        class="emoji_btn"
+        @click="toggleBox(!isEmojiBoxOpened)"
+      />
     </div>
   </div>
 </template>
@@ -50,27 +55,30 @@ export default {
   setup() {
     const state = reactive({
       isEmojiBoxOpened: false,
-      input: null,
       isWinAddEmoji: false,
+      input: null,
+      emojiBtn: null,
       hideTimeout: null
     });
 
     function toggleBox(value) {
       state.isEmojiBoxOpened = value;
-
       clearTimeout(state.hideTimeout);
-      state.hideTimeout = null;
     }
 
     const onMouseOver = mouseOverWrapper(() => {
       toggleBox(true);
     });
 
-    const onMouseOut = mouseOutWrapper(() => {
-      state.hideTimeout = setTimeout(() => {
-        toggleBox(false);
-      }, 250);
-    });
+    const onMouseOut = mouseOutWrapper(
+      () => {
+        state.hideTimeout = setTimeout(() => {
+          toggleBox(false);
+        }, 250);
+      },
+      // Игнорируем переход на кнопку открытия панели с эмодзи
+      () => [state.emojiBtn]
+    );
 
     function onInput(event) {
       if (event.data) {
