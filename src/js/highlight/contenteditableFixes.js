@@ -1,3 +1,6 @@
+// В некоторых случаях, когда в поле уже нет текста, внутри поля
+// все еще не отображается placeholder (не отрабатывает :empty в css),
+// потому что в поле еще есть <br> или <div><br></div>
 export function needClearInput(input) {
   const nodes = input.childNodes;
 
@@ -13,6 +16,9 @@ export function needClearInput(input) {
   );
 }
 
+// При переносе строки сразу после подсвеченного текста
+// <br> вставляется внутрь <span>text</span>, который и дает тексту другой цвет,
+// из-за чего появляются различные проблемы
 export function fixBreakingBr(nodes) {
   const [node] = nodes;
 
@@ -28,6 +34,8 @@ export function fixBreakingBr(nodes) {
   }
 }
 
+// Shift + Enter так же вставляют <br> внутрь спана,
+// делаем такой же фикс, как и в функции выше
 export function moveBRs(node) {
   const nodes = [...node.childNodes].reverse();
 
@@ -36,8 +44,8 @@ export function moveBRs(node) {
       break;
     }
 
-    child.remove();
     node.insertAdjacentElement('afterend', document.createElement('br'));
+    child.remove();
   }
 
   return node;

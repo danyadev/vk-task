@@ -35,6 +35,7 @@
 import { reactive, toRefs } from 'vue';
 import { escape, mouseOverWrapper, mouseOutWrapper } from './js/utils';
 import { getEmojiAndBackground } from './js/emoji';
+import { flatNodes } from './js/highlight/shared';
 import highlightInputContent from './js/highlight';
 
 import EmojiBox from './components/EmojiBox.vue';
@@ -70,11 +71,6 @@ export default {
         toggleBox(false);
       }, 250);
     });
-
-    function addEmoji(emoji) {
-      state.input.focus();
-      insertText(emoji);
-    }
 
     function onInput(event) {
       if (event.data) {
@@ -113,24 +109,15 @@ export default {
       sel.addRange(range);
     }
 
+    function addEmoji(emoji) {
+      state.input.focus();
+      insertText(emoji);
+    }
+
     // Удаляем последний добавленный в инпут элемент (в нашем случае эмодзи)
     function preventInputEvent(event) {
-      function getNodes(childNodes) {
-        const nodes = [];
-
-        for (const node of childNodes) {
-          if (node.nodeName === 'DIV') {
-            nodes.push(...node.childNodes);
-          } else {
-            nodes.push(node);
-          }
-        }
-
-        return nodes;
-      }
-
       const selection = window.getSelection();
-      const nodes = getNodes(state.input.childNodes);
+      const nodes = flatNodes(state.input.childNodes);
       const node = nodes.find((el) => el === selection.anchorNode);
 
       const range = new Range();
@@ -234,7 +221,7 @@ export default {
 
 .toggle-enter-active,
 .toggle-leave-active {
-  transition: all 0.2s ease-out;
+  transition: transform .2s ease-out, opacity .2s ease-out;
 }
 
 .toggle-enter-from,

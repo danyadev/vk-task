@@ -39,6 +39,7 @@ function createParser({ regexp, parseText, parseElement }) {
     return blocks;
   };
 }
+
 // Хештеги парсятся после масс меншнов потому что #abc@all
 // будет упоминать всю беседу, а не игнорировать @all
 const hashtagParser = createParser({

@@ -84,10 +84,6 @@ export default {
 
     /* Focus */
 
-    function getFocusedEmoji() {
-      return state.viewport.querySelector('.emoji_section_item.focused');
-    }
-
     function addFocus(event) {
       [...state.viewport.querySelectorAll('.emoji_section_item.focused')].map((el) => {
         el.classList.remove('focused');
@@ -118,24 +114,25 @@ export default {
 
       event.preventDefault();
 
-      let emojiEl = getFocusedEmoji();
+      const emojiItem = state.viewport.querySelector('.emoji_section_item.focused');
 
-      if (!emojiEl) {
-        emojiEl = state.viewport.querySelector('.emoji_section_item');
+      if (!emojiItem) {
+        const item = state.viewport.querySelector('.emoji_section_item');
 
-        if (emojiEl) {
-          emojiEl.classList.add('focused');
-        } else {
-          return;
+        if (item) {
+          item.classList.add('focused');
         }
+
+        // Первым нажатием мы просто "инициализируем" работу с клавиатурой
+        return;
       }
 
       if (event.code === 'Enter') {
-        emit('addEmoji', emojiEl.dataset.emoji);
+        emit('addEmoji', emojiItem.dataset.emoji);
       }
 
       const EMOJI_ON_LINE = 10;
-      const { emoji } = emojiEl.dataset;
+      const { emoji } = emojiItem.dataset;
 
       const getPosition = (section) => {
         const index = section.indexOf(emoji);
@@ -219,6 +216,7 @@ export default {
     }
 
     onActivated(() => {
+      // Восстанавливаем сохраненную позицию скролла
       if (state.scrollTop !== null) {
         state.viewport.scrollTop = state.scrollTop;
       }
